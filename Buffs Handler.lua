@@ -1,5 +1,5 @@
 --[[
-	Buffs.
+	Buffs..
 ]]--
 local Buffs = {
 	ID = tostring( tick() )..'BUFFS';
