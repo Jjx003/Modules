@@ -1,3 +1,6 @@
+--[[
+	Buffs.
+]]--
 local Buffs = {
 	ID = tostring( tick() )..'BUFFS';
 	ENABLED = false;
