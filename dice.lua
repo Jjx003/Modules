@@ -57,7 +57,7 @@ function dice.new()
 			endPoints[ i ] = range; -- Add previous range to get to actual end point
 			lowerBound = range;
 		end
-		local n = RANDOM( 1, range );
+		local n = RANDOM( 0, range );
 		lowerBound = 0;
 		local selectedIndex;
 		for i, upperBound in pairs( endPoints ) do
