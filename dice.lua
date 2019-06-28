@@ -54,15 +54,14 @@ function dice.new()
 		local lowerBound = 0;
 		for i, set in pairs( die.faces ) do 
 			range = range + set[ 2 ]; -- Accumulate the weights
-			local e = range + lowerBound;
-			endPoints[ i ] = e; -- Add previous range to get to actual end point
-			lowerBound = e;
+			endPoints[ i ] = range; -- Add previous range to get to actual end point
+			lowerBound = range;
 		end
-		local n = RANDOM( 0, range );
+		local n = RANDOM( 1, range );
 		lowerBound = 0;
 		local selectedIndex;
 		for i, upperBound in pairs( endPoints ) do
-			if ( n >= lowerBound and n < upperBound ) then
+			if ( n > lowerBound and n <= upperBound ) then
 				selectedIndex = i;
 				break;
 			end
