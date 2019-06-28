@@ -23,8 +23,9 @@ local RANDOM = math.random;
 
 -- Returns a new callable die
 function dice.new()
-	local die = {}
-	die.faces = {}
+	local die = {};
+	die.faces = {};
+	die.temp = {};
 	
 	function die.setSeed( seed )
 		math.randomseed( seed );
@@ -59,6 +60,23 @@ function dice.new()
 			lowerBound = upperBound;
 		end
 		return die.faces[ selectedIndex ][ 1 ]; -- Return the name
+	end
+
+	-- Remove some faces for the next roll
+	function die.tempFilter( func )
+		local t = {};
+		for _, face in pairs( die.faces ) do
+			if ( func( face ) ) then
+				t[ #t + 1 ] = face;
+			end
+		end
+		die.temp = die.faces;
+		die.faces = t;
+	end
+	
+	-- Restore those faces
+	function die.restore()
+		die.faces = die.temp;
 	end
 	
 	-- Equal probability roll
