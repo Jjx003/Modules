@@ -1,7 +1,7 @@
 --[[
 	Author: Jeff Xu (cxcharlie)
 	Date: June 27th, 2019
-	Filename: dice_module.lua
+	Filename: die_module.lua
 ]]--
 
 
@@ -9,27 +9,27 @@ local module = {}
 
 local RANDOM = math.random;
 
--- Returns a new callable dice
-function module.newDice()
-	local dice = {}
-	dice.faces = {}
+-- Returns a new callable die
+function module.newdie()
+	local die = {}
+	die.faces = {}
 	
-	function dice.setSeed( seed )
+	function die.setSeed( seed )
 		math.randomseed( seed );
 	end
 	
-	-- Add a face to the dice with its probability.
-	-- If you only wish to roll the dice unweighted (equal prob.) don't worry about weight value,
+	-- Add a face to the die with its probability.
+	-- If you only wish to roll the die unweighted (equal prob.) don't worry about weight value,
 	--	just call rollUnweighted()
-	function dice.addFace( name, weight )
-		dice.faces[ #dice.faces + 1 ] = { name, weight };
+	function die.addFace( name, weight )
+		die.faces[ #die.faces + 1 ] = { name, weight };
 	end
 	
 	-- Weighted roll
-	function dice.rollWeighted()
+	function die.rollWeighted()
 		local range = 0;
 		local endPoints = { }; -- End points are the end of the ranges; each index corr. to faces[i]
-		for i, set in pairs( dice.faces ) do 
+		for i, set in pairs( die.faces ) do 
 			range = range + set[2]; -- Accumulate the weights
 			if ( i > 1 ) then
 				endPoints[ i ] = range + endPoints[ i - 1 ]; -- Add previous range to get to actual end point
@@ -47,27 +47,27 @@ function module.newDice()
 			end
 			lowerBound = upperBound;
 		end
-		return dice.faces[ selectedIndex ][ 1 ]; -- Return the name
+		return die.faces[ selectedIndex ][ 1 ]; -- Return the name
 	end
 	
 	-- Equal probability roll
-	function dice.rollUnweighted( )
-		local i = math.random( 1, #dice.faces );
-		return dice.faces[ i ][ 1 ]; -- Return the name
+	function die.rollUnweighted( )
+		local i = math.random( 1, #die.faces );
+		return die.faces[ i ][ 1 ]; -- Return the name
 	end
 	
 	-- Clear the faces
-	function dice.reset()
-		dice.faces = {};
+	function die.reset()
+		die.faces = {};
 	end
 	
 	-- Send to g.c.
-	function dice.destroy()
-		dice.reset();
-		dice = nil;
+	function die.destroy()
+		die.reset();
+		die = nil;
 	end
 	
-	return dice;
+	return die;
 end
 
 
