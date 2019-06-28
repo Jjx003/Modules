@@ -1,13 +1,15 @@
 --[[
-Author: Jeff Xu (cxcharlie)
-Date: June 27th, 2019
-Filename: dice_module.lua
+	Author: Jeff Xu (cxcharlie)
+	Date: June 27th, 2019
+	Filename: dice_module.lua
 ]]--
+
 
 local module = {}
 
 local RANDOM = math.random;
 
+-- Returns a new callable dice
 function module.newDice()
 	local dice = {}
 	dice.faces = {}
@@ -16,10 +18,14 @@ function module.newDice()
 		math.randomseed( seed );
 	end
 	
+	-- Add a face to the dice with its probability.
+	-- If you only wish to roll the dice unweighted (equal prob.) don't worry about weight value,
+	--	just call rollUnweighted()
 	function dice.addFace( name, weight )
 		dice.faces[ #dice.faces + 1 ] = { name, weight };
 	end
 	
+	-- Weighted roll
 	function dice.rollWeighted()
 		local range = 0;
 		local endPoints = { }; -- End points are the end of the ranges; each index corr. to faces[i]
@@ -44,13 +50,21 @@ function module.newDice()
 		return dice.faces[ selectedIndex ][ 1 ]; -- Return the name
 	end
 	
+	-- Equal probability roll
 	function dice.rollUnweighted( )
 		local i = math.random( 1, #dice.faces );
 		return dice.faces[ i ][ 1 ]; -- Return the name
 	end
 	
+	-- Clear the faces
 	function dice.reset()
 		dice.faces = {};
+	end
+	
+	-- Send to g.c.
+	function dice.destroy()
+		dice.reset();
+		dice = nil;
 	end
 	
 	return dice;
