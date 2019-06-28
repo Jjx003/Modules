@@ -1,16 +1,28 @@
 --[[
 	Author: Jeff Xu (cxcharlie)
 	Date: June 27th, 2019
-	Filename: die_module.lua
+	Filename: dice.lua
 ]]--
 
+-- Example Usage:
+--[[
+	
+	local a = dice.new();
+	a.addFace('bob',1);
+	a.addFace('alice',5);
+	for i = 1, 20 do 
+		print( a.rollWeighted())
+	end
 
-local module = {}
+--]]
+
+
+local dice = {}
 
 local RANDOM = math.random;
 
 -- Returns a new callable die
-function module.newdie()
+function dice.new()
 	local die = {}
 	die.faces = {}
 	
@@ -29,16 +41,15 @@ function module.newdie()
 	function die.rollWeighted()
 		local range = 0;
 		local endPoints = { }; -- End points are the end of the ranges; each index corr. to faces[i]
+		local lowerBound = 0;
 		for i, set in pairs( die.faces ) do 
 			range = range + set[2]; -- Accumulate the weights
-			if ( i > 1 ) then
-				endPoints[ i ] = range + endPoints[ i - 1 ]; -- Add previous range to get to actual end point
-			else
-				endPoints[ i ] = range + 0; -- First face, lower bound is zero
-			end
+			local e = range + lowerBound;
+			endPoints[ i ] = e; -- Add previous range to get to actual end point
+			lowerBound = e;
 		end
 		local n = RANDOM( 0, range );
-		local lowerBound = 0;
+		lowerBound = 0;
 		local selectedIndex;
 		for i, upperBound in pairs( endPoints ) do
 			if ( n >= lowerBound and n < upperBound ) then
@@ -71,4 +82,4 @@ function module.newdie()
 end
 
 
-return module
+return dice
