@@ -7,21 +7,22 @@
 -- Example Usage:
 --[[
 	
-	local a = dice.new();
-	a.addFace('bob',1);
-	a.addFace('alice',5);
-	a.addFace(123,3);
-	a.addFace(2,3);
-	a.tempFilter( function(a) return type(a)=='string' end)
-	
-	for i = 1, 20 do 
-		print( a.rollWeighted())
-	end
-	a.restore();
-	for i = 1, 20 do 
-		print( a.rollWeighted())
-	end
+local n = dice.new()
+n.addFace(1,1);
+n.addFace(2,2);
+n.addFace(3,3);
 
+local agg = {0,0,0};
+
+for i = 1,5000 do
+	local r = n.rollWeighted();
+	agg[r] = agg[r] + 1;
+end
+
+local total = (agg[1]+agg[2]+agg[3])
+print('expected:', 1/6, 'result:', agg[1]/total)
+print('expected:', 2/6, 'result:', agg[2]/total)
+print('expected:', 3/6, 'result:', agg[3]/total)
 
 --]]
 
@@ -53,15 +54,15 @@ function dice.new()
 		local endPoints = { }; -- End points are the end of the ranges; each index corr. to faces[i]
 		local lowerBound = 0;
 		for i, set in pairs( die.faces ) do 
-			range = range + set[ 2 ]; -- Accumulate the weights
+			range = range + set[ 2 ] * 10; -- Accumulate the weights, mult by ten for better range
 			endPoints[ i ] = range; -- Add previous range to get to actual end point
 			lowerBound = range;
 		end
-		local n = RANDOM( 0, range );
+		local n = RANDOM( 0, range - 1 );
 		lowerBound = 0;
 		local selectedIndex;
 		for i, upperBound in pairs( endPoints ) do
-			if ( n > lowerBound and n <= upperBound ) then
+			if ( n >= lowerBound and n < upperBound ) then
 				selectedIndex = i;
 				break;
 			end
@@ -106,6 +107,8 @@ function dice.new()
 	
 	return die;
 end
+
+
 
 
 return dice
