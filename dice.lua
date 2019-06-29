@@ -90,7 +90,7 @@ function dice.new()
 				break;
 			end
 		end
-		return die.faces[ selectedIndex ];
+		return die.faces[ selectedIndex ][ 1 ];
 	end
 
 	-- Remove some faces for the next roll
