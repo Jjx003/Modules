@@ -1,7 +1,7 @@
 --[[
 	Author: Jeff Xu (cxcharlie)
 	Date: June 29th, 2019
-	Filename: (Doubly) LinkedList.lua
+	Filename: LinkedList.lua
 --]]
 
 local LinkedList = {}
@@ -50,8 +50,9 @@ function LinkedList.new()
 				list.tail.before.next = list.tail.next;
 				list.tail = list.tail.before;
 				list.head.next.before = list.tail;
-			else
-				current.before.next = current.next;
+            else
+                current.before.next = current.next;
+                current.next.before = current.before
 			end
 		else
 			return false;
