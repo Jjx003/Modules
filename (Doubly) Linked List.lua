@@ -6,10 +6,11 @@
 
 local LinkedList = {}
 
-local function newNode( value, nex, bef )
+local function newNode( key, value, nex, bef )
 	local node = {};
 	node.next = nex;
 	node.before = bef;
+	node.key = key;
 	node.value = value;
 	return node;
 end
@@ -22,14 +23,14 @@ function LinkedList.new()
 		tail = nil;
 	};
 
-	function list.add( value )
+	function list.add( key, value )
 		list.length = list.length + 1;
 		if ( not list.tail ) then
-			local nextNode = newNode( value, nil, nil );
+			local nextNode = newNode( key, value, nil, nil );
 			list.head.next = nextNode;
 			list.tail = nextNode;
 		else
-			local nextNode = newNode( value, list.head.next, list.tail ); -- Next loops back to first, before goes to tail
+			local nextNode = newNode( key, value, list.head.next, list.tail ); -- Next loops back to first, before goes to tail
 			list.tail.next = nextNode;
 			list.tail = nextNode;
 			list.head.next.before = list.tail; -- loop around once again
@@ -38,13 +39,13 @@ function LinkedList.new()
 	
 	list.push = list.add;
 	
-	function list.remove( value )
+	function list.remove( key )
 		local current = list.head.next;
 		local iterations = 0;
-		while ( current.value ~= value and iterations < list.length ) do
+		while ( current.key ~= key and iterations < list.length ) do
 			current = current.next;
 		end
-		if ( current.value == value ) then
+		if ( current.key == key ) then
 			list.length = list.length - 1;
 			if ( current == list.tail ) then
 				list.tail.before.next = list.tail.next;
@@ -66,7 +67,7 @@ function LinkedList.new()
 			list.tail = list.tail.before;
 			list.head.next.before = list.tail;
 			list.length = list.length - 1;
-			return node.value;
+			return node.key, node.value; -- returns key, value
 		end
 	end
 
