@@ -9,12 +9,11 @@ local module = {};
         - module:combatReport(player)
         - module:reset()
 
-
     addTag(player, info):
         // Given an input dictionary that has keys of [TEMPLATE] (see TEMPLATE below), create a new tag for player.
         // Ex: addTag(playerA, {creator=playerB,...}
         //  This would create a tag indicating that playerB has a tag on playerA.
-        RETURNS: NONE
+        RETURNS: combo // Number of times player has performed same action within "timeout" seconds
 
     getLastTag(player):
         // Given a player, retrieve last tag on the player.
@@ -34,10 +33,6 @@ local module = {};
         // Resets the tags and damage trackers. Use this after the game ends so module can be recycled.
         RETURNS: NONE
 ]] -- 
-
-
-
-
 local tags = {};
 local damageStats = {};
 
@@ -51,12 +46,13 @@ local SETTINGS = {
     REQUIRED INFO:
 
     1. Creator - cxcharlie
-    2. Creation Time - tick()
-    3. Damage - 32
-    4. Timeout - 30
-    5. Type - Sin
-    6. Type2 - Wack1
-    7. Hit Part - Left Arm
+    2. Creation Time - tick() (Automatically set, do not remove)
+    3. Combo - 3x (Automatic)
+    4. Damage - 32
+    5. Timeout - 30
+    6. Type - Sin
+    7. Type2 - Wack1
+    8. Hit Part - Left Arm
 ]]--
 
 -- Idea: Create a mapping of the dictionary indices to numerical ones, so we don't have to store these string values
@@ -64,6 +60,7 @@ local MAPPING = {};
 local TEMPLATE = {
     'creator',  
     'creationTime',
+    'combo',
     'damage',
     'timeout',
     'type',
@@ -75,13 +72,14 @@ for index, value in pairs(TEMPLATE) do
     MAPPING[value] = index;
 end
 
-local function createTag(info)
+local function createTag(info, combo)
     if info then
         local newTag = {};
         for index, value in pairs(info) do
             newTag[MAPPING[index]] = value;
         end
-        newTag[MAPPING['creationTime']] = tick();
+        newTag[MAPPING.creationTime] = tick();
+        newTag[MAPPING.combo] = combo;
         return newTag;
     end
 end
@@ -103,11 +101,13 @@ function module:addTag(player, info)
     local pointerPos = #playerTags;
     local decrements = 0;
     local now = tick();
+    local combo = 1;
     while pointerPos >= 1 and decrements < SETTINGS.MAX_SEARCH do
         local current = playerTags[pointerPos];
         if current[MAPPING.creator] == info.creator and current[MAPPING.type2] == info.type2 and
                 now - current[MAPPING.creationTime] < current[MAPPING.timeout] then
             info.damage = info.damage + current[MAPPING.damage];
+            combo = current[MAPPING.combo] + 1;
             table.remove(playerTags, pointerPos);
             break;
          end
@@ -115,7 +115,7 @@ function module:addTag(player, info)
         pointerPos = pointerPos - 1;
     end
 
-    table.insert(playerTags, createTag(info));
+    table.insert(playerTags, createTag(info, combo));
 
     -- Keeping track of overall combat stats
     local dStats = damageStats[info.creator]
@@ -127,6 +127,7 @@ function module:addTag(player, info)
 
     -- Increment total damage dealt
     dStats[tostring(player.UserId)] = dStats[tostring(player.UserId)] + info.damage;
+    return combo;
 end
 
 function module:getLastTag(player)
