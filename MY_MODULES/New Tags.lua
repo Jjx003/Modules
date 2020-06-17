@@ -163,7 +163,7 @@ function module:getTags(player)
         local now = tick();
         local valid = {};
         for _, v in pairs(tags) do
-            if now - v[MAPPING.creationTime] < v[MAPPING.timeout] then
+            if now - v[MAPPING.creationTime] < SETTINGS.ARCHIVE_TIME then
                 local verbose = {};
                 for index, name in pairs(TEMPLATE) do
                     verbose[name] = v[index]
