@@ -2,32 +2,32 @@ local module = {};
 
 
 --[[
-Functions:
-- module:addTag(player, info)
-- moudle:getLastTag(player)
-- module:getTags(player)
-- module:combatReport(player)
-- module:reset()
-addTag(player, info):
-// Given an input dictionary that has keys of [TEMPLATE] (see TEMPLATE below), create a new tag for player.
-// Ex: addTag(playerA, {creator=playerB,...}
-//  This would create a tag indicating that playerB has a tag on playerA.
-RETURNS: combo // Number of times player has performed same action within "timeout" seconds
-getLastTag(player):
-// Given a player, retrieve last tag on the player.
-// This is generally used to determine who dealt the final blow to player
-RETURNS: tag
-getTags(player):
-// Given a player, retrieve all the tags (max at SETTINGS.MAX_TAGS) that are within SETTINGS.ARCHIVE_TIME
-//  seconds of creation.
-RETURNS: {tag1, ..., tagn}
-combatReport(player):
-// Given a player, generate a combat report:
-RETURNS: {totalDamage = 32, individual = {'12345'=20, '9999'=12}}
-reset():
-// Resets the tags and damage trackers. Use this after the game ends so module can be recycled.
-RETURNS: NONE
-]] --
+    Functions:
+        - module:addTag(player, info)
+        - moudle:getLastTag(player)
+        - module:getTags(player)
+        - module:combatReport(player)
+        - module:reset()
+    addTag(player, info):
+        // Given an input dictionary that has keys of [TEMPLATE] (see TEMPLATE below), create a new tag for player.
+        // Ex: addTag(playerA, {creator=playerB,...}
+        //  This would create a tag indicating that playerB has a tag on playerA.
+        RETURNS: combo // Number of times player has performed same action within "timeout" seconds
+    getLastTag(player):
+        // Given a player, retrieve last tag on the player.
+        // This is generally used to determine who dealt the final blow to player
+        RETURNS: tag
+    getTags(player):
+        // Given a player, retrieve all the tags (max at SETTINGS.MAX_TAGS) that are within SETTINGS.ARCHIVE_TIME 
+        //  seconds of creation.
+        RETURNS: {tag1, ..., tagn}
+    combatReport(player):
+        // Given a player, generate a combat report:
+        RETURNS: {totalDamage = 32, individual = {'12345'=20, '9999'=12}}
+    reset():
+        // Resets the tags and damage trackers. Use this after the game ends so module can be recycled.
+        RETURNS: NONE
+]] -- 
 local tags = {};
 local damageStats = {};
 
